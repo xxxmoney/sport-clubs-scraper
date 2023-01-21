@@ -12,7 +12,7 @@ const getLinks = async () => {
 
     const config = {
         pageUrl: "https://www.sportvokoli.cz/sportovni-kluby",
-        linksLimitOverride: null,
+        linksLimitOverride: 50000,
         loadNextSelector: ".txt-c a",
         linksSelector: "#lister-rows a",
         linksCountInfoSelector: ".map-results h1",
