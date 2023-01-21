@@ -88,6 +88,22 @@ class Scraper {
         this.#cofiguration = configuration;
     }
 
+    /** 
+     * Maps data to a single flat object.
+     * @param {Array.<Link>} data 
+     * */
+    static flattenData(data) {
+        return data.map(link => {
+            const result = {};
+            result["url"] = link.url;
+            link.description.items.forEach(item => {
+                result[item.name] = item.value;
+            });
+            return result;
+        });
+    }
+
+
     /** Initializes scraper. */
     async init() {
         this.#browser = await launch(); 
