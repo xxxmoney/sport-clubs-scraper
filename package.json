@@ -1,0 +1,23 @@
+{
+  "name": "cz-sport-clubs-scraper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "node index.js"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xxxmoney/cz-sport-clubs-scraper.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xxxmoney/cz-sport-clubs-scraper/issues"
+  },
+  "homepage": "https://github.com/xxxmoney/cz-sport-clubs-scraper#readme",
+  "dependencies": {
+    "puppeteer": "^19.5.2"
+  }
+}
