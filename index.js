@@ -1,12 +1,18 @@
 import { Scraper, Configuration } from './src/scraper.js';
+import { ExcelMaker } from './src/excelMaker.js';
 import fs from 'fs';
 
-(async () => {
+const files = {
+    links: 'logs\\links.json',
+    errors: 'logs\\errors.json'
+};
+
+const getLinks = async () => {
     const replaceSpaces = (value) => value.replace(/ /g, "");
 
     const config = {
         pageUrl: "https://www.sportvokoli.cz/sportovni-kluby",
-        linksLimitOverride: null,
+        linksLimitOverride: 50000,
         loadNextSelector: ".txt-c a",
         linksSelector: "#lister-rows a",
         linksCountInfoSelector: ".map-results h1",
@@ -39,7 +45,16 @@ import fs from 'fs';
       };
     const linksJson = JSON.stringify(scraper.links);
     const errorsJson = JSON.stringify(scraper.errors);
-    fs.writeFileSync('logs\\links.json', linksJson, options);
-    fs.writeFileSync('logs\\errors.json', errorsJson, options);
+    fs.writeFileSync(files.links, linksJson, options);
+    fs.writeFileSync(files.errors, errorsJson, options);
+};
+
+(async () => {
+    await getLinks();
+
+    const linksJson = fs.readFileSync(files.links, 'utf8');
+    const links = JSON.parse(linksJson);
+
+    ExcelMaker.saveData(Scraper.flattenData(links), "output\\links.xlsx");    
 })();
 

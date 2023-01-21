@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/xxxmoney/cz-sport-clubs-scraper#readme",
   "dependencies": {
+    "exceljs": "^4.3.0",
+    "lodash": "^4.17.21",
     "puppeteer": "^19.5.2"
   }
 }
