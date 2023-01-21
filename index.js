@@ -6,12 +6,10 @@ import fs from 'fs';
 
     const config = {
         pageUrl: "https://www.sportvokoli.cz/sportovni-kluby",
-        linksLimitOverride: 5,
+        linksLimitOverride: null,
         loadNextSelector: ".txt-c a",
-        loadNextInterval: 10,
-        setDescriptionInterval: 10,
         linksSelector: "#lister-rows a",
-        linksCountInfoSelector: "map-results h1",
+        linksCountInfoSelector: ".map-results h1",
         linksCountInfoRegex: /\d{2} \d{3}/,
         descriptionOptions: [
             { name: "name", selector: ".club-name" },
@@ -34,11 +32,14 @@ import fs from 'fs';
 
     await scraper.close();
     
-
     // Saves links and errors to file.
+    const options = {
+        flag: 'w',
+        autoClose: true
+      };
     const linksJson = JSON.stringify(scraper.links);
     const errorsJson = JSON.stringify(scraper.errors);
-    fs.writeFileSync('log\\links.json', linksJson);
-    fs.writeFileSync('log\\errors.json', errorsJson);
+    fs.writeFileSync('logs\\links.json', linksJson, options);
+    fs.writeFileSync('logs\\errors.json', errorsJson, options);
 })();
 

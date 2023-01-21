@@ -55,7 +55,7 @@ class DescriptionItem {
     }
 }
 
-class Error {
+class CustomError {
     url;
     name;
     message;
@@ -76,7 +76,7 @@ class Scraper {
     #browser;
     /** @type {Array.<Link>} */
     #links;
-    /** @type {Array.<Error>} */
+    /** @type {Array.<CustomError>} */
     #errors;
     /** @type {Configuration} */
     #cofiguration;
@@ -97,9 +97,11 @@ class Scraper {
         await this.#browser.close();
     }    
      
+    /** @type {Array.<Link>} */
     get links() {        
         return this.#links;
     }
+    /** @type {Array.<CustomError>} */
     get errors() {        
         return this.#errors;
     }
@@ -137,8 +139,10 @@ class Scraper {
             }
         }, this.#cofiguration.loadNextSelector);
 
-        // Timeout with promise
-        await new Promise(resolve => setTimeout(resolve, this.#cofiguration.loadNextInterval));        
+        // Timeout with promise.
+        if(this.#cofiguration.loadNextInterval) {
+            await new Promise(resolve => setTimeout(resolve, this.#cofiguration.loadNextInterval));        
+        }
     }
     /** 
      * Returns links' hrefs. 
@@ -151,7 +155,7 @@ class Scraper {
         }, this.#cofiguration.linksSelector);
     }
     
-    /** Gets links from page. */
+    /** Sets links from page. */
     async setLinks() {
         const page = await this.#browser.newPage();
         await page.goto(this.#cofiguration.pageUrl);
@@ -163,6 +167,9 @@ class Scraper {
         let hrefs = [];
         while ((hrefs = await this.#getLinkHrefs(page)).length < limit) {
             await this.#loadNext(page);
+            
+            console.clear();
+            console.log(`Links: ${hrefs.length} / ${limit}.`)
         }        
 
         // Sets links from hrefs.
@@ -191,7 +198,7 @@ class Scraper {
 
             // Checks whether value has value.
             if(!value) {
-                const error = new Error(link.url, option.name, "Description value not found.");
+                const error = new CustomError(link.url, option.name, "Description value not found.");
                 this.#errors.push(error);
                 console.error(error.toString());
                 continue;
@@ -201,7 +208,7 @@ class Scraper {
             if(option.regex) {
                 const match = value.match(option.regex);
                 if(!match) {
-                    const error = new Error(link.url, option.name, "Description value does not match regex.");
+                    const error = new CustomError(link.url, option.name, "Description value does not match regex.");
                     this.#errors.push(error);
                     console.error(error.toString());
                     continue;
@@ -221,22 +228,22 @@ class Scraper {
         await page.close();
     }
 
-    /** Gets descriptions from loaded links. */
-    async setDescriptions() {        
-       // Goes through all links and sets description.
-        //  await Promise.all(this.#links.map(async link => {
-        //     await this.#setDescription(link.url, link);
-        // }));        
-
+    /** Sets descriptions from loaded links. */
+    async setDescriptions() {                
         // Goes through all links and sets description.
         for (let i = 0; i < this.#links.length; i++) {
             await this.#setDescription(this.#links[i]);
 
             // Timeout with promise.
-            await new Promise(resolve => setTimeout(resolve, this.#cofiguration.setDescriptionInterval));
+            if(this.#cofiguration.setDescriptionInterval) {
+                await new Promise(resolve => setTimeout(resolve, this.#cofiguration.setDescriptionInterval));   
+            }
+            
+            console.clear();
+            console.log(`Descriptions: ${i + 1} / ${this.#links.length}.`);
         }
     }
     
 }
 
-export { Scraper, Configuration };
+export { Scraper, Configuration, ConfigurationDescriptionItem, Link, CustomError, Description, DescriptionItem };
