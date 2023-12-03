@@ -1,3 +1,3 @@
 ## Sport Clubs Scraper
 
-Simple web scraper app used on some sport club websites.
+Simple desktop node app used on some sport club websites.
